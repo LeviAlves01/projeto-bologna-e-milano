@@ -1,0 +1,17 @@
+@startuml
+title Bolonha e Milano - Casos de uso (Etapa 2)
+left to right direction
+actor Jogador
+
+rectangle "Bolonha e Milano" {
+  usecase "Iniciar novo jogo" as UC1
+  usecase "Ver status da cidade" as UC2
+  usecase "Ver informacoes sobre o jogo" as UC3
+  usecase "Sair do jogo" as UC4
+}
+
+Jogador --> UC1
+Jogador --> UC2
+Jogador --> UC3
+Jogador --> UC4
+@enduml

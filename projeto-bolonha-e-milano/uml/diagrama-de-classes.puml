@@ -1,5 +1,5 @@
 @startuml
-title Bolonha e Milano - Diagrama de classes (Etapa 2)
+title Bolonha e Milano - Diagrama de classes (Etapas 3 e 4 cumulativas)
 skinparam classAttributeIconSize 0
 
 class Main {
@@ -11,9 +11,21 @@ class Menu {
   - emExecucao: boolean
   - jogador: Jogador
   - cidade: Cidade
+  - mercado: Mercado
+  - agricultura: Agricultura
   + executar(): void
   - iniciarNovoJogo(): void
   - exibirStatusCidade(): void
+  - abrirMercado(): void
+  - comprarGraos(): void
+  - venderGraos(): void
+  - comprarTerras(): void
+  - venderTerras(): void
+  - abrirAgricultura(): void
+  - colher(): void
+  - distribuirAlimentos(): void
+  - lerQuantidade(): int
+  - lerPercentualAlimentacao(): int
   - exibirOpcoes(): void
   - lerOpcao(): int
   - processarOpcao(opcao: int): void
@@ -26,19 +38,68 @@ class Jogador {
   + Jogador(nome: String)
   + getNome(): String
   + getTitulo(): String
+  + setTitulo(titulo: String): void
 }
 
 class Cidade {
   - nome: String
   - anoAtual: int
   - dono: Jogador
+  - florins: int
+  - terras: int
+  - graos: int
+  - servos: int
   + Cidade(nome: String, dono: Jogador)
   + avancarAno(): void
+  + adicionarFlorins(qtd: int): void
+  + removerFlorins(qtd: int): boolean
+  + adicionarTerras(qtd: int): void
+  + removerTerras(qtd: int): boolean
+  + adicionarGraos(qtd: int): void
+  + removerGraos(qtd: int): boolean
+  + adicionarServos(qtd: int): void
+  + removerServos(qtd: int): boolean
   + exibirStatus(): void
+  + getNome(): String
+  + getAnoAtual(): int
+  + getDono(): Jogador
+  + getFlorins(): int
+  + getTerras(): int
+  + getGraos(): int
+  + getServos(): int
+}
+
+class Mercado {
+  - PRECO_GRAO: int
+  - PRECO_TERRA: int
+  + getPrecoGrao(): int
+  + getPrecoTerra(): int
+  + comprarGraos(c: Cidade, qtd: int): boolean
+  + venderGraos(c: Cidade, qtd: int): boolean
+  + comprarTerras(c: Cidade, qtd: int): boolean
+  + venderTerras(c: Cidade, qtd: int): boolean
+}
+
+class Agricultura {
+  - HECTARES_POR_SERVO: int
+  - RENDIMENTO_POR_HECTARE: int
+  - SERVOS_POR_GRAO: int
+  - CRESCIMENTO_PERCENTUAL: int
+  - PERCENTUAL_MINIMO: int
+  - PERCENTUAL_MAXIMO: int
+  + processarColheita(cidade: Cidade): int
+  + distribuirAlimentos(cidade: Cidade, percentual: int): boolean
+  + getPercentualMinimo(): int
+  + getPercentualMaximo(): int
 }
 
 Main ..> Menu : cria e usa
 Menu --> "0..1" Jogador
 Menu --> "0..1" Cidade
+Menu --> "1" Mercado : usa
+Menu --> "1" Agricultura : usa
 Cidade --> "1" Jogador : dono
+Mercado ..> Cidade : usa como parametro
+Agricultura ..> Cidade : usa como parametro
+
 @enduml

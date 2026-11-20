@@ -1,5 +1,5 @@
 @startuml
-title Bolonha e Milano - Diagrama de classes (Etapas 3 e 4 cumulativas)
+title Bolonha e Milano - Diagrama de classes (Etapas 1 a 6 cumulativas)
 skinparam classAttributeIconSize 0
 
 class Main {
@@ -13,9 +13,14 @@ class Menu {
   - cidade: Cidade
   - mercado: Mercado
   - agricultura: Agricultura
+  - governo: Governo
+  - construcoes: Construcoes
   + executar(): void
+  - exibirOpcoes(): void
+  - lerOpcao(): int
+  - processarOpcao(opcao: int): void
   - iniciarNovoJogo(): void
-  - exibirStatusCidade(): void
+  - exibirStatus(): void
   - abrirMercado(): void
   - comprarGraos(): void
   - venderGraos(): void
@@ -24,12 +29,18 @@ class Menu {
   - abrirAgricultura(): void
   - colher(): void
   - distribuirAlimentos(): void
+  - abrirGoverno(): void
+  - arrecadarImpostos(): void
+  - definirTaxaImposto(): void
+  - definirJustica(): void
+  - abrirConstrucoes(): void
+  - recrutarSoldados(): void
+  - construir(): void
+  - exibirSobre(): void
   - lerQuantidade(): int
   - lerPercentualAlimentacao(): int
-  - exibirOpcoes(): void
-  - lerOpcao(): int
-  - processarOpcao(opcao: int): void
-  - exibirSobre(): void
+  - lerTexto(pergunta: String): String
+  - jogoIniciado(): boolean
 }
 
 class Jogador {
@@ -49,8 +60,25 @@ class Cidade {
   - terras: int
   - graos: int
   - servos: int
+  - taxaImposto: int
+  - nivelJustica: String
+  - soldados: int
+  - construcoes: int
   + Cidade(nome: String, dono: Jogador)
+  + getNome(): String
+  + getAnoAtual(): int
+  + getDono(): Jogador
   + avancarAno(): void
+  + getFlorins(): int
+  + getTerras(): int
+  + getGraos(): int
+  + getServos(): int
+  + getSoldados(): int
+  + getConstrucoes(): int
+  + getTaxaImposto(): int
+  + setTaxaImposto(taxa: int): void
+  + getNivelJustica(): String
+  + setNivelJustica(nivel: String): void
   + adicionarFlorins(qtd: int): void
   + removerFlorins(qtd: int): boolean
   + adicionarTerras(qtd: int): void
@@ -59,14 +87,11 @@ class Cidade {
   + removerGraos(qtd: int): boolean
   + adicionarServos(qtd: int): void
   + removerServos(qtd: int): boolean
+  + adicionarSoldados(qtd: int): void
+  + removerSoldados(qtd: int): boolean
+  + adicionarConstrucoes(qtd: int): void
+  + removerConstrucoes(qtd: int): boolean
   + exibirStatus(): void
-  + getNome(): String
-  + getAnoAtual(): int
-  + getDono(): Jogador
-  + getFlorins(): int
-  + getTerras(): int
-  + getGraos(): int
-  + getServos(): int
 }
 
 class Mercado {
@@ -89,8 +114,27 @@ class Agricultura {
   - PERCENTUAL_MAXIMO: int
   + processarColheita(cidade: Cidade): int
   + distribuirAlimentos(cidade: Cidade, percentual: int): boolean
-  + getPercentualMinimo(): int
-  + getPercentualMaximo(): int
+}
+
+class Governo {
+  - TAXA_MAXIMA: int
+  - MULTIPLICADOR_JUSTA: double
+  - MULTIPLICADOR_MODERADA: double
+  - MULTIPLICADOR_SEVERA: double
+  + arrecadarImpostos(cidade: Cidade): int
+  + definirTaxaImposto(cidade: Cidade, taxa: int): boolean
+  + definirJustica(cidade: Cidade, nivel: String): boolean
+  - multiplicadorPara(nivel: String): double
+}
+
+class Construcoes {
+  - PRECO_SOLDADO: int
+  - SERVOS_POR_SOLDADO: int
+  - PRECO_CONSTRUCAO: int
+  + recrutarSoldados(cidade: Cidade, qtd: int): boolean
+  + construir(cidade: Cidade, qtd: int): boolean
+  + getPrecoSoldado(): int
+  + getPrecoConstrucao(): int
 }
 
 Main ..> Menu : cria e usa
@@ -98,8 +142,12 @@ Menu --> "0..1" Jogador
 Menu --> "0..1" Cidade
 Menu --> "1" Mercado : usa
 Menu --> "1" Agricultura : usa
+Menu --> "1" Governo : usa
+Menu --> "1" Construcoes : usa
 Cidade --> "1" Jogador : dono
 Mercado ..> Cidade : usa como parametro
 Agricultura ..> Cidade : usa como parametro
+Governo ..> Cidade : usa como parametro
+Construcoes ..> Cidade : usa como parametro
 
 @enduml

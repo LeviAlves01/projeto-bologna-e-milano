@@ -2,8 +2,6 @@ package bolonhaemilano;
 
 public class Cidade {
 
-    public static final int ANO_INICIAL = 1400;
-
     private String nome;
     private int anoAtual;
     private Jogador dono;
@@ -13,15 +11,27 @@ public class Cidade {
     private int graos;
     private int servos;
 
+    private int taxaImposto;
+    private String nivelJustica;
+
+    private int soldados;
+    private int construcoes;
+
     public Cidade(String nome, Jogador dono) {
         this.nome = nome;
         this.dono = dono;
-        this.anoAtual = ANO_INICIAL;
+        this.anoAtual = 1400;
 
         this.florins = 1000;
         this.terras = 10000;
         this.graos = 500;
         this.servos = 200;
+
+        this.taxaImposto = 10;
+        this.nivelJustica = "Moderada";
+
+        this.soldados = 0;
+        this.construcoes = 0;
     }
 
     public void avancarAno() {
@@ -84,6 +94,34 @@ public class Cidade {
         return true;
     }
 
+    public void adicionarSoldados(int quantidade) {
+        if (quantidade > 0) {
+            soldados += quantidade;
+        }
+    }
+
+    public boolean removerSoldados(int quantidade) {
+        if (quantidade <= 0 || quantidade > soldados) {
+            return false;
+        }
+        soldados -= quantidade;
+        return true;
+    }
+
+    public void adicionarConstrucoes(int quantidade) {
+        if (quantidade > 0) {
+            construcoes += quantidade;
+        }
+    }
+
+    public boolean removerConstrucoes(int quantidade) {
+        if (quantidade <= 0 || quantidade > construcoes) {
+            return false;
+        }
+        construcoes -= quantidade;
+        return true;
+    }
+
     public void exibirStatus() {
         System.out.println("------------------------------------------");
         System.out.println(" STATUS DA CIDADE");
@@ -95,6 +133,10 @@ public class Cidade {
         System.out.println(" Terras     : " + terras + " hectares");
         System.out.println(" Graos      : " + graos);
         System.out.println(" Servos     : " + servos);
+        System.out.println(" Taxa imposto: " + taxaImposto + "%");
+        System.out.println(" Justica    : " + nivelJustica);
+        System.out.println(" Soldados   : " + soldados);
+        System.out.println(" Construcoes: " + construcoes);
         System.out.println("------------------------------------------");
     }
 
@@ -109,6 +151,7 @@ public class Cidade {
     public Jogador getDono() {
         return dono;
     }
+
     public int getFlorins() {
         return florins;
     }
@@ -123,5 +166,29 @@ public class Cidade {
 
     public int getServos() {
         return servos;
+    }
+
+    public int getSoldados() {
+        return soldados;
+    }
+
+    public int getConstrucoes() {
+        return construcoes;
+    }
+
+    public int getTaxaImposto() {
+        return taxaImposto;
+    }
+
+    public void setTaxaImposto(int taxaImposto) {
+        this.taxaImposto = taxaImposto;
+    }
+
+    public String getNivelJustica() {
+        return nivelJustica;
+    }
+
+    public void setNivelJustica(String nivelJustica) {
+        this.nivelJustica = nivelJustica;
     }
 }

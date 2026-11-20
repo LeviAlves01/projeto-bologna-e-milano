@@ -3,7 +3,7 @@ package bolonhaemilano;
 public class Mercado {
 
     private static final int PRECO_GRAO = 2;
-    private static final int PRECO_TERRA = 5;
+    private static final int PRECO_TERRA = 1;
 
     public int getPrecoGrao() {
         return PRECO_GRAO;

@@ -54,11 +54,4 @@ public class Agricultura {
         return true;
     }
 
-    public int getPercentualMinimo() {
-        return PERCENTUAL_MINIMO;
-    }
-
-    public int getPercentualMaximo() {
-        return PERCENTUAL_MAXIMO;
-    }
 }

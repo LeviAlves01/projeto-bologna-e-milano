@@ -4,12 +4,14 @@ Jogo de estrategia economica medieval em Java (console), desenvolvido de forma i
 
 ## Estado atual
 
-**Etapas 1 a 4 implementadas.**
+**Etapas 1 a 6 implementadas.**
 
-As Etapas 3 e 4 foram implementadas a partir dos enunciados fornecidos:
+As Etapas 3 a 6 foram implementadas a partir dos enunciados fornecidos:
 
 - **Etapa 3 — Economia:** florins, terras, graos e classe Mercado.
 - **Etapa 4 — Agricultura e populacao:** servos e classe Agricultura.
+- **Etapa 5 — Impostos e governo:** taxa de imposto, nivel de justica e classe Governo.
+- **Etapa 6 — Construcoes e soldados:** soldados, construcoes e classe Construcoes.
 
 A estrutura foi mantida separada por responsabilidade para facilitar a evolucao nas proximas etapas.
 
@@ -39,7 +41,9 @@ java -cp bin bolonhaemilano.Main
 | 2 | Ver status da cidade |
 | 3 | Mercado |
 | 4 | Agricultura |
-| 5 | Sobre o jogo |
+| 5 | Governo |
+| 6 | Construcoes |
+| 7 | Sobre o jogo |
 | 0 | Sair |
 
 ### Mercado
@@ -58,6 +62,19 @@ O submenu possui:
 
 1. Colher (processar safra)
 2. Distribuir alimentos
+0. Voltar
+
+### Governo
+
+1. Arrecadar impostos
+2. Definir taxa de imposto
+3. Definir nivel de justica
+0. Voltar
+
+### Construcoes
+
+1. Recrutar soldados
+2. Construir
 0. Voltar
 
 ## Etapa 3 — Economia
@@ -80,14 +97,12 @@ A classe `Mercado`:
 
 ### Precos
 
-O enunciado da Etapa 3 exige precos fixos, mas nao informa os valores numericos. Por isso, os valores foram centralizados no inicio de `Mercado.java` para que possam ser alterados facilmente:
+Conforme o manual do jogo: 1 grao = 2 florins e 1 hectare de terra = 1 florim (compra e venda ao mesmo preco).
 
 ```java
 private static final int PRECO_GRAO = 2;
-private static final int PRECO_TERRA = 5;
+private static final int PRECO_TERRA = 1;
 ```
-
-Se o professor fornecer outros valores, basta alterar essas duas constantes.
 
 ## Etapa 4 — Agricultura e populacao
 
@@ -136,6 +151,31 @@ deficit = necessidade - alimento
 
 O deficit e removido da populacao, sem permitir que os servos fiquem negativos.
 
+## Etapa 5 — Impostos e governo
+
+A `Cidade` recebe `taxaImposto` (10% inicial) e `nivelJustica` ("Moderada" inicial). Sao configuracoes, nao recursos acumulaveis: possuem apenas getter e setter simples.
+
+A classe `Governo` (sem referencia permanente a `Cidade`):
+
+```text
+base = servos * taxa / 100
+arrecadado = base * multiplicador     (Justa 0,8 / Moderada 1,0 / Severa 1,3)
+```
+
+- `definirTaxaImposto`: aceita apenas 0 a 50;
+- `definirJustica`: aceita apenas "Justa", "Moderada" ou "Severa" (no menu, escolhida por submenu numerado).
+
+## Etapa 6 — Construcoes e soldados
+
+A `Cidade` recebe `soldados` e `construcoes` (0 iniciais), com o padrao seguro `adicionar*/remover*`.
+
+A classe `Construcoes`:
+
+- `recrutarSoldados`: cada soldado custa 5 florins + 1 servo; florins e servos sao validados **antes** de alterar qualquer um;
+- `construir`: cada construcao custa 20 florins.
+
+"Ver status da cidade" exibe tambem taxa de imposto, justica, soldados e construcoes.
+
 ## Estrutura do projeto
 
 ```text
@@ -147,7 +187,9 @@ projeto-bolonha-e-milano/
 │       ├── Jogador.java
 │       ├── Cidade.java
 │       ├── Mercado.java
-│       └── Agricultura.java
+│       ├── Agricultura.java
+│       ├── Governo.java
+│       └── Construcoes.java
 ├── uml/
 │   └── diagrama-de-classes.puml
 ├── casos-de-uso/
@@ -165,7 +207,7 @@ Ponto de entrada do programa. Apenas cria o `Menu` e inicia a execucao.
 
 Responsavel pela interface de console, leitura das escolhas e delegacao das operacoes.
 
-A regra de negocio nao fica concentrada no menu: compras/vendas ficam em `Mercado`, e colheita/alimentacao ficam em `Agricultura`.
+A regra de negocio nao fica concentrada no menu: compras/vendas ficam em `Mercado`, colheita/alimentacao em `Agricultura`, impostos/justica em `Governo` e soldados/obras em `Construcoes`.
 
 ### `Jogador`
 
@@ -185,11 +227,21 @@ Nesta versao possui:
 - florins;
 - terras;
 - graos;
-- servos.
+- servos;
+- taxa de imposto e nivel de justica;
+- soldados e construcoes.
 
 ### `Mercado`
 
 Concentra as regras de comercio.
+
+### `Governo`
+
+Concentra impostos e configuracao de taxa/justica.
+
+### `Construcoes`
+
+Concentra recrutamento de soldados e construcao de edificios.
 
 ### `Agricultura`
 
@@ -197,30 +249,14 @@ Concentra as regras de colheita e distribuicao de alimentos.
 
 ## Diagramas
 
-Os diagramas cumulativos das Etapas 3 e 4 estao em:
+Os diagramas cumulativos (Etapas 1 a 6) estao em:
 
 ```text
 uml/diagrama-de-classes.puml
 casos-de-uso/diagrama-de-casos-de-uso.puml
 ```
 
-Eles podem ser abertos com PlantUML ou com uma extensao PlantUML no VS Code/IntelliJ.
+## Proximas etapas
 
-## Preparacao para as proximas etapas
-
-A implementacao foi organizada para que as proximas funcionalidades possam ser adicionadas sem colocar todas as regras dentro de `Menu`.
-
-Uma evolucao natural e:
-
-- `Impostos` para a Etapa 5;
-- `Construcoes` e `Defesa` para a Etapa 6;
-- listas de jogadores/cidades e processamento anual para a Etapa 7;
-- testes e integracao para a Etapa 8.
-
-Novas regras de negocio devem preferencialmente ficar em classes de servico separadas, seguindo o padrao usado por `Mercado` e `Agricultura`.
-
-## Observacao sobre a dinamica completa
-
-O PDF da dinamica completa apresenta uma visao mais ampla do jogo, incluindo impostos, justica, construcoes, soldados, eventos, titulos e multiplos jogadores. Esses elementos sao referencia para as etapas futuras e **nao foram implementados antecipadamente**, pois as Etapas 3 e 4 solicitam especificamente economia, agricultura e populacao.
-
-Isso mantem o projeto incremental e facilita a evolucao conforme os proximos enunciados forem apresentados.
+- Etapa 7: rodadas (avancar o ano), multiplos jogadores e vitoria;
+- Etapa 8: integracao, testes e entrega final.

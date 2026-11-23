@@ -14,27 +14,36 @@ Jogo de estrategia economica e politica na Italia medieval, em Java (console), d
 - **Etapa 8 — Integracao, testes e entrega final:** classe `Testes`, refatoracao do `Menu` e diagramas finais.
 - **Extra — Eventos aleatorios:** classe `Eventos` (seca e peste), sorteados ao comecar cada novo ano.
 
-## Como compilar e executar
+## Como obter, compilar e executar
 
 Requer Java 17 ou superior, sem ferramenta de build externa.
 
-A partir da pasta do projeto:
+Clone o repositorio e entre na pasta (a raiz do repositorio e a pasta que contem `src/`, `uml/` e este `README.md`):
+
+```text
+git clone <url-do-repositorio>
+cd projeto-bologna-e-milano
+```
+
+Compile e execute a partir da raiz:
 
 ```text
 javac -encoding UTF-8 -d bin src/bolonhaemilano/*.java
 java -cp bin bolonhaemilano.Main
 ```
 
-No Windows, se necessario:
+No Windows (prompt de comando), se necessario:
 
 ```text
 javac -encoding UTF-8 -d bin src\bolonhaemilano\*.java
 java -cp bin bolonhaemilano.Main
 ```
 
+A pasta `bin/` guarda os arquivos compilados e nao e versionada (so o `bin/.gitkeep`, para a pasta existir apos o clone).
+
 ## Como rodar os testes
 
-Os testes ficam em `Testes.java` (sem JUnit ou biblioteca externa) e compilam junto com o jogo:
+Os testes ficam em `Testes.java` (sem JUnit ou biblioteca externa) e compilam junto com o jogo. Depois de compilar como acima, ainda na raiz:
 
 ```text
 java -cp bin bolonhaemilano.Testes
@@ -54,7 +63,7 @@ Ao escolher **Novo jogo**, informe quantos jogadores (1 a 4; valor invalido vira
 
 A cada volta do menu a tela e limpa e o cabecalho mostra o **ano** e a **vez do jogador**. Depois de cada resultado, o jogo espera **ENTER** para continuar (para a mensagem nao sumir antes de ser lida).
 
-Em cada turno o jogador pode usar mercado, agricultura, governo e construcoes quantas vezes quiser, com duas regras: **colher** e **arrecadar impostos** valem **uma vez por ano** por cidade. Ao terminar, escolhe **Encerrar turno**. Quando o ultimo jogador encerra, o ano fecha (todas as cidades avancam um ano e os governantes que merecem sao promovidos).
+Em cada turno o jogador pode usar mercado, agricultura, governo e construcoes quantas vezes quiser, com duas regras: **colher** e **arrecadar impostos** valem **uma vez por ano** por cidade. Ao terminar, escolhe **Encerrar turno**. Quando o ultimo jogador encerra, o ano fecha (todas as cidades avancam um ano e os governantes que merecem sao promovidos). Em seguida, se o jogo continua, aparece o bloco **EVENTOS DO ANO** com a seca ou a peste que atingiu cada cidade (ou a mensagem de que nada aconteceu).
 
 ### Menu principal
 
@@ -188,7 +197,7 @@ Os efeitos usam `removerGraos`/`removerServos`, entao nenhum recurso fica negati
 ## Estrutura do projeto
 
 ```text
-projeto-bolonha-e-milano/
+projeto-bologna-e-milano/
 ├── src/
 │   └── bolonhaemilano/
 │       ├── Main.java
@@ -208,6 +217,9 @@ projeto-bolonha-e-milano/
 │   └── diagrama-de-sequencia.puml
 ├── casos-de-uso/
 │   └── diagrama-de-casos-de-uso.puml
+├── bin/
+│   └── .gitkeep
+├── .gitignore
 └── README.md
 ```
 
@@ -223,7 +235,7 @@ projeto-bolonha-e-milano/
 
 ## Diagramas
 
-Os diagramas finais (Etapas 1 a 8) estao em:
+Os diagramas finais (Etapas 1 a 8, incluindo os eventos aleatorios) estao em:
 
 ```text
 uml/diagrama-de-classes.puml

@@ -17,6 +17,9 @@ public class Cidade {
     private int soldados;
     private int construcoes;
 
+    private boolean colheitaFeita;
+    private boolean impostosArrecadados;
+
     public Cidade(String nome, Jogador dono) {
         this.nome = nome;
         this.dono = dono;
@@ -32,10 +35,31 @@ public class Cidade {
 
         this.soldados = 0;
         this.construcoes = 0;
+
+        this.colheitaFeita = false;
+        this.impostosArrecadados = false;
     }
 
     public void avancarAno() {
         anoAtual++;
+        colheitaFeita = false;
+        impostosArrecadados = false;
+    }
+
+    public boolean isColheitaFeita() {
+        return colheitaFeita;
+    }
+
+    public void marcarColheitaFeita() {
+        colheitaFeita = true;
+    }
+
+    public boolean isImpostosArrecadados() {
+        return impostosArrecadados;
+    }
+
+    public void marcarImpostosArrecadados() {
+        impostosArrecadados = true;
     }
 
     public void adicionarFlorins(int quantidade) {
@@ -137,6 +161,8 @@ public class Cidade {
         System.out.println(" Justica    : " + nivelJustica);
         System.out.println(" Soldados   : " + soldados);
         System.out.println(" Construcoes: " + construcoes);
+        System.out.println(" Colheita   : " + (colheitaFeita ? "ja feita neste ano" : "pendente"));
+        System.out.println(" Impostos   : " + (impostosArrecadados ? "ja arrecadados neste ano" : "pendentes"));
         System.out.println("------------------------------------------");
     }
 

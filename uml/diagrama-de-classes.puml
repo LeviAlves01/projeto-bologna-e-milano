@@ -1,23 +1,32 @@
 @startuml
-title Bolonha e Milano - Diagrama de classes (Etapas 1 a 6 cumulativas)
+title Bolonha e Milano - Diagrama de classes (Etapas 1 a 8 cumulativas + eventos aleatorios)
 skinparam classAttributeIconSize 0
 
 class Main {
-  + main(args: String[]): void
+  + {static} main(args: String[]): void
 }
 
 class Menu {
   - scanner: Scanner
   - emExecucao: boolean
-  - jogador: Jogador
+  - partida: Partida
   - cidade: Cidade
   - mercado: Mercado
   - agricultura: Agricultura
   - governo: Governo
   - construcoes: Construcoes
+  - nobreza: Nobreza
+  - eventos: Eventos
   + executar(): void
+  - limparTela(): void
+  - exibirCabecalho(): void
+  - pausar(): void
   - exibirOpcoes(): void
   - lerOpcao(): int
+  - lerInteiro(): int
+  - lerQuantidade(): int
+  - lerTexto(pergunta: String): String
+  - exigirJogoEmAndamento(): boolean
   - processarOpcao(opcao: int): void
   - iniciarNovoJogo(): void
   - exibirStatus(): void
@@ -36,20 +45,41 @@ class Menu {
   - abrirConstrucoes(): void
   - recrutarSoldados(): void
   - construir(): void
+  - encerrarTurno(): void
+  - sortearEventosDoAno(): void
+  - exibirClassificacao(): void
+  - encerrarPartida(): void
   - exibirSobre(): void
-  - lerQuantidade(): int
-  - lerPercentualAlimentacao(): int
-  - lerTexto(pergunta: String): String
-  - jogoIniciado(): boolean
+}
+
+class Partida {
+  + {static} MAXIMO_JOGADORES: int = 4
+  - {static} ANO_FINAL: int = 1410
+  - cidades: List<Cidade>
+  - indiceAtual: int
+  + Partida()
+  + adicionarCidade(cidade: Cidade): boolean
+  + getCidades(): List<Cidade>
+  + getCidadeAtual(): Cidade
+  + getAnoAtual(): int
+  + getAnoFinal(): int
+  + passarTurno(): boolean
+  + encerrarAno(nobreza: Nobreza): List<Cidade>
+  + terminou(): boolean
+  + determinarVencedor(nobreza: Nobreza): Cidade
+  - ehMelhor(candidata: Cidade, atual: Cidade, nobreza: Nobreza): boolean
 }
 
 class Jogador {
+  - {static} TITULOS: String[]
   - nome: String
-  - titulo: String
+  - nivelTitulo: int
   + Jogador(nome: String)
   + getNome(): String
   + getTitulo(): String
-  + setTitulo(titulo: String): void
+  + getNivelTitulo(): int
+  + promover(): boolean
+  + ehMonarca(): boolean
 }
 
 class Cidade {
@@ -64,11 +94,17 @@ class Cidade {
   - nivelJustica: String
   - soldados: int
   - construcoes: int
+  - colheitaFeita: boolean
+  - impostosArrecadados: boolean
   + Cidade(nome: String, dono: Jogador)
   + getNome(): String
   + getAnoAtual(): int
   + getDono(): Jogador
   + avancarAno(): void
+  + isColheitaFeita(): boolean
+  + marcarColheitaFeita(): void
+  + isImpostosArrecadados(): boolean
+  + marcarImpostosArrecadados(): void
   + getFlorins(): int
   + getTerras(): int
   + getGraos(): int
@@ -137,17 +173,78 @@ class Construcoes {
   + getPrecoConstrucao(): int
 }
 
+class Nobreza {
+  - PESO_CONSTRUCAO: int = 10
+  - PESO_SOLDADO: int = 2
+  - PESO_SERVO: int = 1
+  - HECTARES_POR_PONTO: int = 100
+  - PRESTIGIO_MINIMO: int[] = {0, 400, 550, 700, 850, 1000}
+  + calcularPrestigio(cidade: Cidade): int
+  + prestigioParaProximoTitulo(jogador: Jogador): int
+  + verificarPromocao(cidade: Cidade): boolean
+}
+
+class Eventos {
+  + {static} TIPO_NENHUM: int = 0
+  + {static} TIPO_SECA: int = 1
+  + {static} TIPO_PESTE: int = 2
+  - {static} CHANCE_SECA: int = 15
+  - {static} CHANCE_PESTE: int = 10
+  - {static} PERCENTUAL_PERDA_SECA: int = 40
+  - {static} PERCENTUAL_PERDA_PESTE: int = 20
+  - random: Random
+  + Eventos()
+  + Eventos(random: Random)
+  + sortearEvento(cidade: Cidade): int
+  + aplicarSeca(cidade: Cidade): int
+  + aplicarPeste(cidade: Cidade): int
+}
+
+class Testes {
+  - {static} aprovados: int
+  - {static} reprovados: int
+  + {static} main(args: String[]): void
+  - {static} verificar(descricao: String, condicao: boolean): void
+  - {static} novaCidade(): Cidade
+  - {static} testarCidade(): void
+  - {static} testarMercado(): void
+  - {static} testarAgricultura(): void
+  - {static} testarGoverno(): void
+  - {static} testarConstrucoes(): void
+  - {static} testarJogadorENobreza(): void
+  - {static} testarPartida(): void
+  - {static} eventosComSorteio(valor: int): Eventos
+  - {static} testarEventos(): void
+}
+
 Main ..> Menu : cria e usa
-Menu --> "0..1" Jogador
-Menu --> "0..1" Cidade
+Menu --> "0..1" Partida
+Menu --> "0..1" Cidade : cidade da vez
 Menu --> "1" Mercado : usa
 Menu --> "1" Agricultura : usa
 Menu --> "1" Governo : usa
 Menu --> "1" Construcoes : usa
+Menu --> "1" Nobreza : usa
+Menu --> "1" Eventos : usa
+Partida --> "1..4" Cidade : cidades
+Partida --> "1" Cidade : vez atual
 Cidade --> "1" Jogador : dono
 Mercado ..> Cidade : usa como parametro
 Agricultura ..> Cidade : usa como parametro
 Governo ..> Cidade : usa como parametro
 Construcoes ..> Cidade : usa como parametro
+Nobreza ..> Cidade : usa como parametro
+Eventos ..> Cidade : usa como parametro
+Nobreza ..> Jogador : usa como parametro
+Partida ..> Nobreza : usa como parametro
+Testes ..> Cidade : testa
+Testes ..> Mercado : testa
+Testes ..> Agricultura : testa
+Testes ..> Governo : testa
+Testes ..> Construcoes : testa
+Testes ..> Nobreza : testa
+Testes ..> Jogador : testa
+Testes ..> Partida : testa
+Testes ..> Eventos : testa
 
 @enduml
